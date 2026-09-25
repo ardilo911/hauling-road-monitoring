@@ -45,6 +45,7 @@ export const KATEGORI_TO_WORK_ITEM: Record<RekapKategori, WorkItem> = {
 
 export interface Profile {
   id: string;
+  email: string | null;
   username: string;
   nama: string;
   role: UserRole;

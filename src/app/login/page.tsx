@@ -18,27 +18,13 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
 
-    // Login pakai email Supabase Auth. Jika user mengetik username, cari email-nya lewat profiles dulu.
-    let email = usernameOrEmail;
-    if (!email.includes("@")) {
-      const { data: prof } = await supabase
-        .from("profiles")
-        .select("id, username")
-        .eq("username", usernameOrEmail)
-        .maybeSingle();
-      if (!prof) {
-        setError("Username atau password salah.");
-        setLoading(false);
-        return;
-      }
-      // Supabase auth butuh email; skema ini mengasumsikan username disamakan dengan bagian lokal email.
-      // Jika Anda menyimpan email penuh di profiles, sesuaikan query di atas untuk mengambil kolom email.
-      email = usernameOrEmail;
-    }
-
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+    // Supabase Auth selalu login pakai email. Kolom `username` di profiles hanya dipakai
+    // untuk tampilan, bukan untuk login — mencari email lewat username sebelum login butuh
+    // membaca tabel profiles saat belum ada sesi (anonymous), yang sengaja tidak diizinkan
+    // oleh RLS supaya alamat email pengguna lain tidak bisa ditebak/di-enumerasi dari luar.
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email: usernameOrEmail, password });
     if (signInError) {
-      setError("Username atau password salah.");
+      setError("Email atau password salah.");
       setLoading(false);
       return;
     }
@@ -53,12 +39,13 @@ export default function LoginPage() {
           <div className="mt-1 text-sm text-gray-500">Monitoring Garansi Hauling Road</div>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <Field label="Username / Email">
+          <Field label="Email">
             <Input
               required
+              type="email"
               value={usernameOrEmail}
               onChange={(e) => setUsernameOrEmail(e.target.value)}
-              placeholder="nama.pengguna atau email"
+              placeholder="nama@perusahaan.com"
               autoFocus
             />
           </Field>

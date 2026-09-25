@@ -9,18 +9,22 @@ Stack: **Next.js 14 (App Router) + TypeScript + Tailwind CSS + Supabase (Auth + 
 ## 1. Setup Supabase
 
 1. Buat project baru di [supabase.com](https://supabase.com).
-2. Buka **SQL Editor**, tempel seluruh isi file `supabase/schema.sql`, lalu jalankan (Run). Ini membuat semua tabel, tipe data, trigger profile otomatis, dan Row Level Security.
-3. Buka **Authentication → Users → Add user**, buat user pertama (pakai email asli, misal `admin@perusahaan.com`), isi password.
-   - Baris di tabel `profiles` akan otomatis terbuat oleh trigger.
-4. Jadikan user tadi admin dengan penuh akses ke kedua mitra. Di SQL Editor jalankan:
+2. Buka **SQL Editor**, tempel seluruh isi file `supabase/schema.sql`, lalu jalankan (Run). File ini aman dijalankan berkali-kali (idempotent) — membuat semua tabel, tipe data, trigger profile otomatis, dan Row Level Security untuk 2 tingkat akses: **admin** (semua mitra) dan **user mitra** (satu perusahaan saja).
+3. Buka **Authentication → Users → Add user**, buat akun-akun yang dibutuhkan, misalnya:
+   - `admin@perusahaan.com` → nanti jadi Admin, akses semua mitra.
+   - `pic.wasco@perusahaan.com` → nanti jadi User Mitra, hanya Wasco.
+   - `pic.khs@perusahaan.com` → nanti jadi User Mitra, hanya KHS.
+   - Baris di tabel `profiles` untuk tiap akun akan otomatis terbuat oleh trigger.
+4. Atur role & akses mitra tiap akun. Blok siap-pakai sudah ada di bagian paling bawah `schema.sql` (tinggal ganti alamat email sesuai yang Anda daftarkan), contoh:
    ```sql
-   update profiles
-   set role = 'admin', akses_mitra = '{wasco,khs}'
-   where username = 'admin'; -- username = bagian sebelum @ di email
+   update profiles set role = 'admin', akses_mitra = '{wasco,khs}'
+     where email = 'admin@perusahaan.com';
+   update profiles set role = 'user', akses_mitra = '{wasco}'
+     where email = 'pic.wasco@perusahaan.com';
    ```
-5. Buka **Project Settings → API**, salin **Project URL** dan **anon public key** — dipakai di langkah 3.
+5. Buka **Project Settings → API**, salin **Project URL** dan **anon public key** — dipakai di langkah berikut.
 
-> Catatan: aplikasi ini login menggunakan **email** Supabase Auth (bukan username custom terpisah), karena Supabase Auth berbasis email. Kolom `username` di tabel `profiles` dipakai untuk tampilan & pemetaan akses, tapi saat login isi kolom "Username/Email" dengan **email lengkap** yang didaftarkan.
+> Catatan: aplikasi ini login menggunakan **email** Supabase Auth. Kolom `username` di tabel `profiles` hanya untuk tampilan; saat login isi kolom "Email" dengan email lengkap yang didaftarkan.
 
 ---
 

@@ -66,14 +66,14 @@ export default function UsersPage() {
         <table className="data-table">
           <thead>
             <tr>
-              <th>Username</th><th>Nama</th><th>Role</th><th>Akses Mitra</th><th>Status</th>
+              <th>Email</th><th>Nama</th><th>Role</th><th>Akses Mitra</th><th>Status</th>
             </tr>
           </thead>
           <tbody>
             {loading && <tr><td colSpan={5} className="py-6 text-center text-gray-400">Memuat...</td></tr>}
             {!loading && users.map((u) => (
               <tr key={u.id}>
-                <td>{u.username}</td>
+                <td>{u.email ?? u.username}</td>
                 <td>{u.nama}</td>
                 <td>
                   <Select value={u.role} onChange={(e) => updateRole(u.id, e.target.value as UserRole)}>
