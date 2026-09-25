@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  background-color: #F6F6F4;
+  color: #20232A;
+}
+
+.chainage {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.scroll-x {
+  overflow-x: auto;
+}
+
+table.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+table.data-table th {
+  text-align: left;
+  font-weight: 600;
+  color: #6B7280;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #E5E5E0;
+  white-space: nowrap;
+}
+table.data-table td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #EFEFEA;
+  white-space: nowrap;
+}
+table.data-table tbody tr:hover {
+  background-color: #FBFBF9;
+}
